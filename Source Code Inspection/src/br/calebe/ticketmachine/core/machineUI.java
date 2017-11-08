@@ -5,6 +5,7 @@
  */
 package br.calebe.ticketmachine.core;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
@@ -18,31 +19,38 @@ import javax.swing.JPanel;
 public class machineUI {
     
     public void MainScreen(){
-        JFrame janela;
-        janela = new JFrame("Sistema de Emição de Passagens");
+        JFrame frame;
+        frame = new JFrame("Sistema de Emição de Passagens");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        janela.pack();
+        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        frame.pack();
         
-        janela.setSize(400,300);
-        janela.setLocation(
-                dim.width/2-janela.getSize().width/2,
-                dim.height/2-janela.getSize().height/2);
+        frame.setSize(400,300);
+        frame.setLocation(
+                dim.width/2-frame.getSize().width/2,
+                dim.height/2-frame.getSize().height/2);
         
-        janela.add(PanelSaldo());
+        frame.add(PanelSaldo());
         
-	janela.setVisible(true);
+	frame.setVisible(true);
     }
     
     private JPanel PanelSaldo(){
         JPanel panel = new JPanel();
         
-        panel.add(LabelSaldo());
+        panel.setSize(100, 100);
         
+        panel.add(LabelSaldo());
+
         return panel;
     }
     
     private JLabel LabelSaldo(){
-        JLabel saldoAtual = new JLabel();
+        TicketMachine ticket = new TicketMachine();
+        JLabel saldoAtual = new JLabel("R$ "+ticket.getSaldo());
+        
+        saldoAtual.setForeground(Color.red);
+        saldoAtual.setFont (saldoAtual.getFont().deriveFont (48.0f));
         
         return saldoAtual;
     }
