@@ -5,12 +5,9 @@
  */
 package br.calebe.ticketmachine.core;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import br.calebe.ticketmachine.exception.PapelMoedaInvalidaException;
+import br.calebe.ticketmachine.exception.SaldoInsuficienteException;
+import java.util.Scanner;
 
 /**
  *
@@ -18,40 +15,50 @@ import javax.swing.JPanel;
  */
 public class machineUI {
     
-    public void MainScreen(){
-        JFrame frame;
-        frame = new JFrame("Sistema de Emição de Passagens");
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+    public void MainScreen() throws PapelMoedaInvalidaException{
+        Scanner reader = new Scanner(System.in);
+        TicketMachine ticket = new TicketMachine(2);
+        int op = 0, valor= 0;
         
-        frame.setSize(400,300);
-        frame.setLocation(
-                dim.width/2-frame.getSize().width/2,
-                dim.height/2-frame.getSize().height/2);
-        
-        frame.add(PanelSaldo());
-        
-	frame.setVisible(true);
-    }
+        while(op != 4){
+            System.out.println("Saldo: "+ ticket.getSaldo());
+            System.out.println("1 - Inserir");
+            System.out.println("2 - Emitir");
+            System.out.println("3 - Troco");
+            System.out.println("4 - Sair");
+            
+            System.out.print("Escolho: ");
+            op = reader.nextInt();
+            
+            if(op == 1){
+                System.out.print("Valor: ");
+                valor = reader.nextInt();
+                
+                try{
+                    ticket.inserir(valor);
+                }
+                catch(PapelMoedaInvalidaException ex){
+                    System.out.println("Valor da nota Invalida...");
+                }
+            }
+            else if(op == 2){
+                try{
+                    System.out.println(ticket.imprimir());
+                    System.out.println("Bilhete Impreso");
+                }
+                catch(SaldoInsuficienteException ex){
+                    System.out.println("Saldo Infuficiente para imprimir bilhete");
+                }
+            }
+            else if(op == 3){
+                ticket.getTroco();
     
-    private JPanel PanelSaldo(){
-        JPanel panel = new JPanel();
-        
-        panel.setSize(100, 100);
-        
-        panel.add(LabelSaldo());
-
-        return panel;
-    }
-    
-    private JLabel LabelSaldo(){
-        TicketMachine ticket = new TicketMachine();
-        JLabel saldoAtual = new JLabel("R$ "+ticket.getSaldo());
-        
-        saldoAtual.setForeground(Color.red);
-        saldoAtual.setFont (saldoAtual.getFont().deriveFont (48.0f));
-        
-        return saldoAtual;
+            }
+            else if(op == 4)
+                System.exit(0);
+            else
+               System.out.println("Invalido...");
+            System.out.println("///////////////////////////////");
+        }
     }
 }
